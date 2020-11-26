@@ -1,4 +1,5 @@
 package com.lecture1.adminapp;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -71,12 +72,12 @@ public class UploadNotice extends AppCompatActivity {
         uploadNoticeBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(noticeTitle.getText().toString().isEmpty()){
+                if (noticeTitle.getText().toString().isEmpty()) {
                     noticeTitle.setError("Empty");
                     noticeTitle.requestFocus();
-                }else if(bitmap == null){
+                } else if (bitmap == null) {
                     uploadData();
-                }else {
+                } else {
                     uploadImage();
                 }
             }
@@ -87,10 +88,10 @@ public class UploadNotice extends AppCompatActivity {
         pd.setMessage("Uploading...");
         pd.show();
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        bitmap.compress(Bitmap.CompressFormat.JPEG, 50 ,baos);
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 50, baos);
         byte[] finalimg = baos.toByteArray();
         final StorageReference filePath;
-        filePath = storageReference.child("Notice").child(finalimg+"jpg");
+        filePath = storageReference.child("Notice").child(finalimg + "jpg");
         final UploadTask uploadTask = filePath.putBytes(finalimg);
         uploadTask.addOnCompleteListener(UploadNotice.this, new OnCompleteListener<UploadTask.TaskSnapshot>() {
             @Override
@@ -108,7 +109,7 @@ public class UploadNotice extends AppCompatActivity {
                             });
                         }
                     });
-                }else {
+                } else {
                     pd.dismiss();
                     Toast.makeText(UploadNotice.this, "Something went wrong", Toast.LENGTH_SHORT).show();
                 }
@@ -130,7 +131,7 @@ public class UploadNotice extends AppCompatActivity {
         SimpleDateFormat currentTime = new SimpleDateFormat("hh:mm a");
         String time = currentTime.format(calForTime.getTime());
 
-        NoticeData noticeData = new NoticeData(title,downloadUrl,date,time,uniqueKey);
+        NoticeData noticeData = new NoticeData(title, downloadUrl, date, time, uniqueKey);
 
         dbRef.child(uniqueKey).setValue(noticeData).addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
@@ -150,16 +151,16 @@ public class UploadNotice extends AppCompatActivity {
 
     private void openGallery() {
         Intent pickImage = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-        startActivityForResult(pickImage,REQ);
+        startActivityForResult(pickImage, REQ);
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if(requestCode == REQ && resultCode == RESULT_OK){
+        if (requestCode == REQ && resultCode == RESULT_OK) {
             Uri uri = data.getData();
             try {
-                bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(),uri);
+                bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), uri);
             } catch (IOException e) {
                 e.printStackTrace();
             }
